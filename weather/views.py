@@ -13,7 +13,6 @@
 #     data = response.json()
 
 #     return JsonResponse(data)
-
 from django.http import JsonResponse
 import requests
 from rest_framework.views import APIView
@@ -39,27 +38,37 @@ class WeatherAPIView(APIView):
         response = requests.get(URL)
         data = response.json()
 
-        if "current" in data:
+        if "current" in data and "location" in data:
             weather_info = data["current"]
+            location_info = data["location"]
 
-            # Save to database
+            # Save or update in the database
             weather_entry, created = Weather.objects.update_or_create(
                 city=CITY,
                 defaults={
+                    "country": location_info["country"],
                     "temperature": weather_info["temperature"],
+                    "feelslike": weather_info["feelslike"],
                     "description": weather_info["weather_descriptions"][0],
                     "wind_speed": weather_info["wind_speed"],
                     "humidity": weather_info["humidity"],
+                    "is_day": weather_info["is_day"],
+                    "localtime": location_info["localtime"],
                 },
             )
 
             return Response(
                 {
                     "city": CITY,
+                    "country": location_info["country"],
                     "temperature": weather_info["temperature"],
+                    "feelslike": weather_info["feelslike"],
                     "description": weather_info["weather_descriptions"][0],
                     "wind_speed": weather_info["wind_speed"],
                     "humidity": weather_info["humidity"],
+                    "is_day": weather_info["is_day"],
+                    "localtime": location_info["localtime"],
+                    "last_updated": weather_entry.last_updated,
                     "message": "Weather data successfully fetched and saved!",
                 },
                 status=status.HTTP_200_OK,
