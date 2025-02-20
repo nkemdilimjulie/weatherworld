@@ -1,6 +1,14 @@
+# from django.urls import path
+# from .views import get_weather
+
+# urlpatterns = [
+#     path("weather/", get_weather, name="get-weather"),
+
+# ]
+
 from django.urls import path
-from .views import get_weather
+from .views import WeatherAPIView
 
 urlpatterns = [
-    path("weather/", get_weather, name="get-weather"),
+    path("weather/", WeatherAPIView.as_view(), name="get-weather"),
 ]
