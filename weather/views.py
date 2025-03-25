@@ -1,25 +1,9 @@
-# from django.http import JsonResponse
-# import requests
-
-
-# def get_weather(request):
-#     YOUR_ACCESS_KEY = "3582989a79ba60577dfce823e5099df4"  # Replace with your actual key
-#     CITY = request.GET.get("city", "Abuja")  # Allows dynamic city input
-#     URL = (
-#         f"http://api.weatherstack.com/current?access_key={YOUR_ACCESS_KEY}&query={CITY}"
-#     )
-
-#     response = requests.get(URL)
-#     data = response.json()
-
-#     return JsonResponse(data)
-from django.http import JsonResponse
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.conf import settings
 from .models import Weather
-
 
 class WeatherAPIView(APIView):
     """
@@ -27,12 +11,8 @@ class WeatherAPIView(APIView):
     """
 
     def get(self, request):
-        YOUR_ACCESS_KEY = (
-            "..."  # Replace with your actual key
-        )
-        CITY = request.GET.get(
-            "city", "New York"
-        )  # Defaults to New York if no city is provided
+        YOUR_ACCESS_KEY = "b2d7d35ff0a0dfb3c55b4f43254d95f2"  # 🔹 Replace with your actual key
+        CITY = request.GET.get("city", "New York")  # Defaults to New York if no city is provided
         URL = f"http://api.weatherstack.com/current?access_key={YOUR_ACCESS_KEY}&query={CITY}"
 
         response = requests.get(URL)
@@ -42,18 +22,18 @@ class WeatherAPIView(APIView):
             weather_info = data["current"]
             location_info = data["location"]
 
-            # Save or update in the database
+            # 🔹 Save or update the database entry
             weather_entry, created = Weather.objects.update_or_create(
                 city=CITY,
                 defaults={
-                    "country": location_info["country"],
-                    "temperature": weather_info["temperature"],
-                    "feelslike": weather_info["feelslike"],
-                    "description": weather_info["weather_descriptions"][0],
-                    "wind_speed": weather_info["wind_speed"],
-                    "humidity": weather_info["humidity"],
-                    "is_day": weather_info["is_day"],
-                    "localtime": location_info["localtime"],
+                    "country": location_info.get("country", "Unknown"),
+                    "temperature": weather_info.get("temperature", 0),
+                    "feelslike": weather_info.get("feelslike", 0),
+                    "description": weather_info["weather_descriptions"][0] if weather_info.get("weather_descriptions") else "N/A",
+                    "wind_speed": weather_info.get("wind_speed", 0),
+                    "humidity": weather_info.get("humidity", 0),
+                    "is_day": weather_info.get("is_day", "Unknown"),
+                    "localtime": location_info.get("localtime", None),
                 },
             )
 
@@ -63,7 +43,7 @@ class WeatherAPIView(APIView):
                     "country": location_info["country"],
                     "temperature": weather_info["temperature"],
                     "feelslike": weather_info["feelslike"],
-                    "description": weather_info["weather_descriptions"][0],
+                    "description": weather_info["weather_descriptions"][0] if weather_info.get("weather_descriptions") else "N/A",
                     "wind_speed": weather_info["wind_speed"],
                     "humidity": weather_info["humidity"],
                     "is_day": weather_info["is_day"],
@@ -74,7 +54,4 @@ class WeatherAPIView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        return Response(
-            {"error": "Could not fetch weather data"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return Response({"error": "Could not fetch weather data"}, status=status.HTTP_400_BAD_REQUEST)
