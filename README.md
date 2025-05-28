@@ -179,6 +179,22 @@ python manage.py runserver
 
  
  
+ ## Run pip freeze > requirements.txt after all installations
+
  
- 
- 
+ 📌 Best Practice:
+After you’ve installed all the required packages in your virtual environment (.weathervenv), then run:
+
+```
+pip freeze > requirements.txt
+```
+This captures the complete and final list of packages used in your project — including versions — so anyone can reproduce your environment.
+
+🔄 **When to re-run pip freeze:**
+You should update your requirements.txt anytime you:
+
++ Install a new package (pip install django, djangorestframework, etc.)
+
++ Upgrade a package
+
++ Remove a package

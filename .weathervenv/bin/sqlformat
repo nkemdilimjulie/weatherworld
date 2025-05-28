@@ -1,4 +1,6 @@
-#!/home/dci-student/P24-E04/DJANGO/PORTFOLIO/weatherworld/.weathervenv/bin/python3
+#!/bin/sh
+'''exec' "/home/dci-student/P24-E04/PORTFOLIO/WEATHER WORLD WIDE/weather_worldwide_project/weatherworld/.weathervenv/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

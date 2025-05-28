@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from .models import Weather
+from decouple import config
+
 
 class WeatherAPIView(APIView):
     """
@@ -11,7 +13,7 @@ class WeatherAPIView(APIView):
     """
 
     def get(self, request):
-        YOUR_ACCESS_KEY = "b2d7d35ff0a0dfb3c55b4f43254d95f2"  # 🔹 Replace with your actual key
+        YOUR_ACCESS_KEY = config('WEATHER_API_KEY')
         CITY = request.GET.get("city", "New York")  # Defaults to New York if no city is provided
         URL = f"http://api.weatherstack.com/current?access_key={YOUR_ACCESS_KEY}&query={CITY}"
 

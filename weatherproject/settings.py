@@ -27,6 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+from decouple import config, Csv
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+WEATHER_API_KEY = config('WEATHER_API_KEY')
 
 # Application definition
 
