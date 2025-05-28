@@ -53,7 +53,7 @@ class WeatherAPIView(APIView):
 
     def get(self, request):
         YOUR_ACCESS_KEY = (
-            "3582989a79ba60577dfce823e5099df4"  # Replace with your actual key
+            "xxx"  # Replace with your actual key
         )
         CITY = request.GET.get(
             "city", "New York"
